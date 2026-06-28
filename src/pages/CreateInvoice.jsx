@@ -57,8 +57,10 @@ const CreateInvoice = () => {
   const removeItem = (idx) => setItems(items.filter((_, i) => i !== idx));
 
   const handleSubmit = async () => {
-    if (!selectedClientId || items.some(i => !i.serviceId)) {
-      return Swal.fire("Warning", "Select client and services", "warning");
+    const filledItems = items.filter(i => i.serviceId);
+
+    if (!selectedClientId || filledItems.length === 0) {
+      return Swal.fire("Warning", "Select client and at least one service", "warning");
     }
 
     const payload = {
@@ -68,7 +70,7 @@ const CreateInvoice = () => {
       taxPercentage: selectedTax?.percentage || 0,
       status,
       paymentStatus: paymentStatus,
-      items: items.map(i => ({ serviceId: Number(i.serviceId) }))
+      items: filledItems.map(i => ({ serviceId: Number(i.serviceId) }))
     };
 
     try {
